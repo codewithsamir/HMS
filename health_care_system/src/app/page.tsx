@@ -4,6 +4,7 @@ import { Stethoscope, CalendarCheck, Users } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Header from '@/components/Landingpage/Header';
+import { FaStethoscope } from 'react-icons/fa';
 
 export default function LandingPage() {
   return (
@@ -52,15 +53,16 @@ export default function LandingPage() {
       <footer className="bg-gray-900 text-white py-12 px-4">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <h4 className="text-xl font-semibold mb-4">HealthConnect Pro</h4>
+             <FaStethoscope className="text-blue-600 w-8 h-8" />
+            <h4 className="text-xl font-semibold mb-4">HealthConnect </h4>
             <p className="text-gray-400">Making healthcare accessible and convenient for everyone.</p>
           </div>
           <div>
             <h4 className="text-xl font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
-              <li><Link href="/about" className="text-gray-400 hover:text-white transition">About Us</Link></li>
-              <li><Link href="/contact" className="text-gray-400 hover:text-white transition">Contact</Link></li>
-              <li><Link href="/privacy" className="text-gray-400 hover:text-white transition">Privacy Policy</Link></li>
+              <li><Link href="/" className="text-gray-400 hover:text-white transition">About Us</Link></li>
+              <li><Link href="/" className="text-gray-400 hover:text-white transition">Contact</Link></li>
+              <li><Link href="/" className="text-gray-400 hover:text-white transition">Privacy Policy</Link></li>
             </ul>
           </div>
           <div>

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import React, { useState } from 'react';
-import { FaStethoscope, FaUser, FaUserMd, FaUserShield, FaBars, FaTimes } from 'react-icons/fa';
+import { FaStethoscope, FaUser, FaUserMd, FaUserShield, FaBars, FaTimes, FaHome } from 'react-icons/fa';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,6 +38,10 @@ const Header = () => {
 
        
           <div className="flex flex-col md:flex-row md:space-x-6 space-y-4 md:space-y-0">
+            <Link href="/" className="flex items-center gap-2  hover:underline transition ">
+              <FaHome className="text-blue-600 w-5 h-5" />
+              <span className="font-medium ">Home</span>
+            </Link>
             <Link href="/Login/user" className="flex items-center gap-2  hover:underline transition ">
               <FaUser className="text-blue-600 w-5 h-5" />
               <span className="font-medium ">User Login</span>
