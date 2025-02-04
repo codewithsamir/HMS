@@ -1,3 +1,37 @@
+// import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
+
+// interface AuthState {
+//     user: object ; 
+   
+// }
+
+
+
+// export const authSlice = createApi({
+//     reducerPath:'api',
+//     baseQuery: fetchBaseQuery({
+//         baseUrl:String(process.env.NEXT_PUBLIC_APPWRITE_HOST_URL),
+//         prepareHeaders(headers){
+//             headers.set('x-api-key',String(process.env.APPWRITE_API_KEY));
+//             return headers;
+//         }
+//     }),
+//     endpoints(builder){
+//         return{
+//             authdata: builder.query<AuthState , number | void>({
+//                 query(limit = 10){
+//                     return `/account`
+//                 },
+//             }),
+//         };
+//     },
+// });
+
+// export const { useAuthdataQuery} = authSlice;
+
+
+
+
 import { account } from "@/models/client/config";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
@@ -71,3 +105,6 @@ export const authSlice = createApi({
 
 // Export hooks
 export const { useGetUserQuery, useRegisterUserMutation, useLoginUserMutation, useLogoutUserMutation } = authSlice;
+
+
+
