@@ -20,8 +20,10 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import Header from "@/components/Landingpage/Header"
 
+import { useByGoogleMutation, useRegisterUserMutation } from "@/store/authSlice"
+
 const formSchema = z.object({
-  username: z.string().min(2, { message: "Username must be at least 2 characters." }),
+  name: z.string().min(2, { message: "Username must be at least 2 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
   password: z.string().min(6, { message: "Password must be at least 6 characters." }),
   confirmPassword: z.string().min(6, { message: "Confirm password must be at least 6 characters." })
@@ -32,6 +34,9 @@ const formSchema = z.object({
 
 export default function UserSignup({params}:{params:Promise<{signupid:string}>}) {
    const [signupid, setsignupid] = useState<string | null>(null);
+   const [registerUser] = useRegisterUserMutation();
+   const [byGoogle] =  useByGoogleMutation();
+   
  useEffect(()=>{
  const getparam = async ()=>{
    const { signupid } = await params; // Unwrap params
@@ -45,7 +50,7 @@ export default function UserSignup({params}:{params:Promise<{signupid:string}>})
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      name: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -57,6 +62,8 @@ export default function UserSignup({params}:{params:Promise<{signupid:string}>})
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
+    const {email,name,password} = values
+    registerUser({email,name,password})
   }
 
   return (
@@ -69,7 +76,7 @@ export default function UserSignup({params}:{params:Promise<{signupid:string}>})
               <h2 className="text-2xl font-bold text-center text-white capitalize">{signupid} Signup</h2>
               <FormField
                 control={form.control}
-                name="username"
+                name="name"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-white">Username</FormLabel>
@@ -123,7 +130,9 @@ export default function UserSignup({params}:{params:Promise<{signupid:string}>})
               />
               <Button type="submit" className="bg-white text-black hover:bg-red-500 hover:text-white w-full">Signup</Button>
             </form>
-            <Button className="bg-black w-full px-4 py-5 rounded-lg shadow-md text-white hover:bg-red-500 hover:text-white">
+            <Button
+            onClick={()=>byGoogle()}
+            className="bg-black w-full px-4 py-5 rounded-lg shadow-md text-white hover:bg-red-500 hover:text-white">
               <FaGoogle size={20} color="white" /> Signup with Google
             </Button>
             <div className="flex justify-center items-center flex-col text-sm text-white">

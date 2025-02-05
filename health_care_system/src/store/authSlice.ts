@@ -34,6 +34,7 @@
 
 import { account } from "@/models/client/config";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { OAuthProvider } from "appwrite";
 
 interface User {
     $id: string;
@@ -80,6 +81,22 @@ export const authSlice = createApi({
                 }
             },
         }),
+        byGoogle: builder.mutation<{ success: boolean; message: string }, void>({
+            async queryFn() {
+                try {
+                    await account.createOAuth2Session(
+                        OAuthProvider.Google, // provider
+                        'https://supreme-giggle-w6prj9pjrvr2965p-3000.app.github.dev', // redirect here on success
+                        'https://supreme-giggle-w6prj9pjrvr2965p-3000.app.github.dev/failed', // redirect here on failure
+                        [] // scopes (optional)
+                    );
+                    return { data: { success: true, message: "User registered successfully!" } };
+                } catch (error: any) {
+                    return { error: { status: "CUSTOM_ERROR", error: error.message || "Registration failed" } };
+                }
+            },
+        }),
+        
         loginUser: builder.mutation<{ success: boolean; message: string }, { email: string; password: string }>({
             async queryFn({ email, password }) {
                 try {
@@ -104,7 +121,7 @@ export const authSlice = createApi({
 });
 
 // Export hooks
-export const { useGetUserQuery, useRegisterUserMutation, useLoginUserMutation, useLogoutUserMutation } = authSlice;
+export const { useGetUserQuery, useRegisterUserMutation, useLoginUserMutation, useLogoutUserMutation,useByGoogleMutation } = authSlice;
 
 
 
