@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import Header from '@/components/Landingpage/Header';
 import { FaStethoscope } from 'react-icons/fa';
 
+
 export default function LandingPage() {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-blue-50 to-white">

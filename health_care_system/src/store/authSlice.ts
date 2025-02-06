@@ -23,6 +23,11 @@
 //                     return `/account`
 //                 },
 //             }),
+//             authdata2: builder.query<AuthState , number | void>({
+//                 query(limit = 10){
+//                     return `/user`
+//                 },
+//             }),
 //         };
 //     },
 // });
@@ -45,8 +50,6 @@ interface User {
 
 interface AuthState {
     user: User | null;
-    error: string | null;
-    isLoading: boolean;
     isUserLogin: boolean;
 }
 
@@ -65,7 +68,7 @@ export const authSlice = createApi({
             async queryFn() {
                 try {
                     const user = await account.get();
-                    return { data: { user, error: null, isLoading: false, isUserLogin: true } };
+                    return { data: { user,  isUserLogin: true } };
                 } catch (error: any) {
                     return { error: { status: "CUSTOM_ERROR", error: error.message || "Failed to fetch user" } };
                 }
@@ -86,8 +89,8 @@ export const authSlice = createApi({
                 try {
                     await account.createOAuth2Session(
                         OAuthProvider.Google, // provider
-                        'https://supreme-giggle-w6prj9pjrvr2965p-3000.app.github.dev', // redirect here on success
-                        'https://supreme-giggle-w6prj9pjrvr2965p-3000.app.github.dev/failed', // redirect here on failure
+                        'https://probable-space-sniffle-445j9g59qvjc97v-3000.app.github.dev/User', // redirect here on success
+                        'https://probable-space-sniffle-445j9g59qvjc97v-3000.app.github.dev/fail', // redirect here on failure
                         [] // scopes (optional)
                     );
                     return { data: { success: true, message: "User registered successfully!" } };

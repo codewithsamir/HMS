@@ -20,6 +20,8 @@ import { FaEye, FaEyeSlash, FaGoogle, FaUser } from "react-icons/fa";
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import Header from "@/components/Landingpage/Header"
+import { useByGoogleMutation, useLoginUserMutation } from "@/store/authSlice"
+import { useRouter } from "next/navigation"
 
 const formSchema = z.object({
   email: z.string().min(2, {
@@ -33,6 +35,9 @@ const formSchema = z.object({
 
 export default  function UserLogin({params}:{params: Promise<{ loginid: string }>}){
   const [loginid, setLoginid] = useState<string | null>(null);
+  const [loginUser,{ data:loginuser, isLoading:loginloading }] = useLoginUserMutation()
+     const [byGoogle,{ data:googledata,  isLoading:googleloading }] =  useByGoogleMutation();
+     const router = useRouter()
 useEffect(()=>{
 const getparam = async ()=>{
   const { loginid } = await params; // Unwrap params
@@ -62,6 +67,12 @@ getparam()
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values)
+   loginUser(values);
+   if(loginuser){
+    router("/User")
+   }
+  
+    
   }
 
   return (
@@ -113,7 +124,15 @@ getparam()
     
 
       </form>
-      <Button type="submit" className="bg-black w-full max-w-md px-4 py-5  rounded-lg shadow-md text-white hover:bg-red-500 hover:text-white w-full">
+      <Button 
+        onClick={()=>{
+          byGoogle()
+          if(googledata){
+            router("/User")
+          }
+         
+        }}
+      className="bg-black w-full max-w-md px-4 py-5  rounded-lg shadow-md text-white hover:bg-red-500 hover:text-white w-full">
         <FaGoogle size={20} color="white"/>
         login with Google</Button>
       <div className="flex justify-center items-center flex-col text-sm text-white">if you haven't already Account then <Link href={`/Signup/${loginid}`} className="text-white underline hover:text-red-500">Signup</Link></div>
