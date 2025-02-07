@@ -22,6 +22,7 @@ import Header from "@/components/Landingpage/Header";
 import { useByGoogleMutation, useLoginUserMutation, useLogoutUserMutation } from "@/store/authSlice";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import ProtectedRoute from "@/components/container/Protectedroute";
 
 const formSchema = z.object({
   email: z.string().min(2, {
@@ -33,7 +34,7 @@ const formSchema = z.object({
 });
 
 export default function UserLogin({ params }: { params: Promise<{ loginid: string }> }) {
-  const [loginid, setLoginid] = useState<string | null>(null);
+  const [loginid, setLoginid] = useState<string>("");
   const [loginUser, { data: logindata, isLoading: loginloading }] = useLoginUserMutation();
   const [byGoogle, { data: googledata, isLoading: googleloading }] = useByGoogleMutation();
   const router = useRouter();
@@ -79,6 +80,7 @@ export default function UserLogin({ params }: { params: Promise<{ loginid: strin
 
   return (
     <>
+    <ProtectedRoute role={loginid}>
       <Header />
       <Bgwrapper>
         <div className="w-full max-w-md px-4 py-6 sm:p-8 space-y-6 bg-blue-500 rounded-lg shadow-md">
@@ -144,21 +146,7 @@ export default function UserLogin({ params }: { params: Promise<{ loginid: strin
             </form>
 
             <Button
-              onClick={() => {
-                byGoogle()
-                  .unwrap()
-                  .then((data) => {
-                    console.log(data)
-                    if (data) {
-                      router.push("/User");
-        
-
-                    }
-                  })
-                  .catch((error) => {
-                    console.error(error);
-                  });
-              }}
+              onClick={() =>  byGoogle({role:loginid})}
               className="bg-black w-full max-w-md px-4 py-5 rounded-lg shadow-md text-white hover:bg-red-500 hover:text-white"
               disabled={googleloading}
             >
@@ -175,6 +163,7 @@ export default function UserLogin({ params }: { params: Promise<{ loginid: strin
           </Form>
         </div>
       </Bgwrapper>
+      </ProtectedRoute>
     </>
   );
 }

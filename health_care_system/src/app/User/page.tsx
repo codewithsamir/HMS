@@ -1,27 +1,38 @@
-"use client"
-import ProtectedRoute from '@/components/container/Protectedroute'
+"use client";
+
+import ProtectedRoute from '@/components/container/Protectedroute';
 import { Button } from '@/components/ui/button';
-import { useLogoutUserMutation } from '@/store/authSlice';
-import { useRouter } from 'next/navigation';
+import { useGetUserQuery, useLogoutUserMutation, useSetRoleMutation } from '@/store/authSlice';
+import { useRouter, usePathname } from 'next/navigation';
+import React from 'react';
 
-
-import React from 'react'
-
-const page = () => {
+const Page: React.FC = () => {
+  const router = useRouter();
+  const path = usePathname();
   const [logoutUser] = useLogoutUserMutation();
-  const router = useRouter()
-  return (
-   <ProtectedRoute>
-        <h1>
-        welcome to dashboard
-        </h1>
-        <Button
-        onClick={()=>{
-          logoutUser().unwrap().then((data)=>router.push("/"))
-        }}
-        >logout</Button>
-        </ProtectedRoute>
-  )
-}
+  const [setRole] = useSetRoleMutation();
+  const { data } = useGetUserQuery();
 
-export default page
+  console.log(data);
+
+  return (
+    <ProtectedRoute >
+      <h1>Welcome to the dashboard</h1>
+      <Button
+        onClick={() => {
+          logoutUser().unwrap().then(() => router.push("/"));
+        }}
+      >
+        Logout
+      </Button>
+      {data?.user && (
+        <>
+          <h2>{data.user.$id}</h2>
+          <h2>{data.user.email}</h2>
+        </>
+      )}
+    </ProtectedRoute>
+  );
+};
+
+export default Page;

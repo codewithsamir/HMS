@@ -63,7 +63,7 @@ export default function UserSignup({params}:{params:Promise<{signupid:string}>})
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
     const {email,name,password} = values
-    registerUser({email,name,password})
+    registerUser({email,name,password,role:signupid})
   }
 
   return (

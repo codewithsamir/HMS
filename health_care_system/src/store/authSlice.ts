@@ -62,13 +62,12 @@ export const authSlice = createApi({
         getUser: builder.query<AuthState, void>({
             async queryFn() {
                 try {
-                    // Check for an active session
+                  
                     const user = await account.getSession('current');
-console.log(user);
-                    // const user = await account.get();
-                    // console.log(user)
-                        // const user = await account.get();
-                        return { data: { user} };
+                    
+                    const user2 = await account.get();
+                  
+                        return { data: { user:user2} };
                  
                     
                 } catch (error: any) {
@@ -77,26 +76,53 @@ console.log(user);
                 }
             },
         }),
-        registerUser: builder.mutation<{ success: boolean; message: string }, { email: string; password: string; name: string }>({
-            async queryFn({ email, password, name }) {
+        // getUserByGoogle: builder.query<AuthState, void>({
+        //     async queryFn() {
+        //         try {
+        //             // Check for an active session
+        //             const user = await account.getSession('current');
+                    
+        //             const user2 = await account.get();
+                  
+        //                 return { data: { user:user2} };
+                 
+                    
+        //         } catch (error: any) {
+        //             console.log(error.message)
+        //             return { error: { status: "CUSTOM_ERROR", error: error.message || "Failed to fetch user" } };
+        //         }
+        //     },
+        // }),
+        registerUser: builder.mutation<{ success: boolean; message: string }, { email: string; password: string; name: string,role:string }>({
+            async queryFn({ email, password, name,role }) {
                 try {
                     const newUser = await account.create("unique()", email, password, name);
+                    const response = await account.updatePrefs(
+                        {"role":`${role}`},
+                       
+                    );
                     return { data: { success: true, message: "User registered successfully!" } };
                 } catch (error: any) {
                     return { error: { status: "CUSTOM_ERROR", error: error.message || "Registration failed" } };
                 }
             },
         }),
-        byGoogle: builder.mutation<{ success: boolean; message: string }, void>({
-            async queryFn() {
+        byGoogle: builder.mutation<{ success: boolean; message: string }, {role:string}>({
+            async queryFn({role}) {
+                
                 try {
                  const data =    await account.createOAuth2Session(
                         OAuthProvider.Google, 
                         
-                        'https://upgraded-space-carnival-445j9g59q5gc7rx6-3000.app.github.dev/User', // redirect here on success
+                        `https://upgraded-space-carnival-445j9g59q5gc7rx6-3000.app.github.dev/${role}`, // redirect here on success
                         'https://upgraded-space-carnival-445j9g59q5gc7rx6-3000.app.github.dev/fail', // redirect here on failure
                         ['email', 'profile']  // Request required scopes
                     );
+
+                  
+
+                    
+                    
                     
                     return { data: { success: true, message: "User registered successfully!" } };
                 } catch (error: any) {
@@ -109,6 +135,19 @@ console.log(user);
             async queryFn({ email, password }) {
                 try {
                     await account.createEmailPasswordSession(email, password);
+                    return { data: { success: true, message: "Login successful!" } };
+                } catch (error: any) {
+                    return { error: { status: "CUSTOM_ERROR", error: error.message || "Login failed" } };
+                }
+            },
+        }),
+        setRole: builder.mutation<{ success: boolean; message: string }, { role: string }>({
+            async queryFn({ role }) {
+                try {
+                    const response = await account.updatePrefs(
+                        {"role":`${role}`},
+                       
+                    );
                     return { data: { success: true, message: "Login successful!" } };
                 } catch (error: any) {
                     return { error: { status: "CUSTOM_ERROR", error: error.message || "Login failed" } };
@@ -129,7 +168,14 @@ console.log(user);
 });
 
 // Export hooks
-export const { useGetUserQuery, useRegisterUserMutation, useLoginUserMutation, useLogoutUserMutation,useByGoogleMutation } = authSlice;
+export const { useGetUserQuery,
+     useRegisterUserMutation,
+      useLoginUserMutation,
+       useLogoutUserMutation,
+       useByGoogleMutation ,
+  
+       useSetRoleMutation
+    } = authSlice;
 
 
 
