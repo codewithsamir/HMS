@@ -41,16 +41,11 @@ import { account } from "@/models/client/config";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { OAuthProvider } from "appwrite";
 
-interface User {
-    $id: string;
-    name: string;
-    email: string;
-    [key: string]: any;
-}
+
 
 interface AuthState {
-    user: User | null;
-    isUserLogin: boolean;
+    user:object | null;
+    
 }
 
 export const authSlice = createApi({
@@ -67,9 +62,17 @@ export const authSlice = createApi({
         getUser: builder.query<AuthState, void>({
             async queryFn() {
                 try {
-                    const user = await account.get();
-                    return { data: { user,  isUserLogin: true } };
+                    // Check for an active session
+                    const user = await account.getSession('current');
+console.log(user);
+                    // const user = await account.get();
+                    // console.log(user)
+                        // const user = await account.get();
+                        return { data: { user} };
+                 
+                    
                 } catch (error: any) {
+                    console.log(error.message)
                     return { error: { status: "CUSTOM_ERROR", error: error.message || "Failed to fetch user" } };
                 }
             },
@@ -87,12 +90,14 @@ export const authSlice = createApi({
         byGoogle: builder.mutation<{ success: boolean; message: string }, void>({
             async queryFn() {
                 try {
-                    await account.createOAuth2Session(
-                        OAuthProvider.Google, // provider
-                        'https://probable-space-sniffle-445j9g59qvjc97v-3000.app.github.dev/User', // redirect here on success
-                        'https://probable-space-sniffle-445j9g59qvjc97v-3000.app.github.dev/fail', // redirect here on failure
-                        [] // scopes (optional)
+                 const data =    await account.createOAuth2Session(
+                        OAuthProvider.Google, 
+                        
+                        'https://upgraded-space-carnival-445j9g59q5gc7rx6-3000.app.github.dev/User', // redirect here on success
+                        'https://upgraded-space-carnival-445j9g59q5gc7rx6-3000.app.github.dev/fail', // redirect here on failure
+                        ['email', 'profile']  // Request required scopes
                     );
+                    
                     return { data: { success: true, message: "User registered successfully!" } };
                 } catch (error: any) {
                     return { error: { status: "CUSTOM_ERROR", error: error.message || "Registration failed" } };

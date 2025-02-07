@@ -8,7 +8,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { data, isLoading } = useGetUserQuery();
+  const { data, isLoading ,error} = useGetUserQuery();
   const router = useRouter();
 
   useEffect(() => {
@@ -18,16 +18,13 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
         // Redirect unauthenticated users to the login page.
         router.push('/');
       }
-      // If needed, you can handle redirection for authenticated users here.
-      // For example, if you want to redirect authenticated users to a specific page,
-      // you can uncomment the following code:
-      //
+     
       else {
         router.push('/User');
       }
     }
-    console.log(data,isLoading)
-  }, [data, isLoading, router]);
+    console.log(data,isLoading,error)
+  }, [data, isLoading, router,error]);
 
   // Optionally, show a loading indicator while checking authentication status.
   if (isLoading) {
