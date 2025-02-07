@@ -25,25 +25,24 @@ import { useByGoogleMutation, useRegisterUserMutation } from "@/store/authSlice"
 const formSchema = z.object({
   name: z.string().min(2, { message: "Username must be at least 2 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
+  role: z.enum(['User', 'Doctor', 'Admin'], {
+    message: "Role must be one of: admin, user, or doctor.",
+  }),
   password: z.string().min(6, { message: "Password must be at least 6 characters." }),
   confirmPassword: z.string().min(6, { message: "Confirm password must be at least 6 characters." })
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords do not match",
   path: ["confirmPassword"],
+
+ 
 });
 
-export default function UserSignup({params}:{params:Promise<{signupid:string}>}) {
-   const [signupid, setsignupid] = useState<string | null>(null);
+export default function UserSignup() {
+  
    const [registerUser] = useRegisterUserMutation();
    const [byGoogle] =  useByGoogleMutation();
    
- useEffect(()=>{
- const getparam = async ()=>{
-   const { signupid } = await params; // Unwrap params
-   setsignupid(signupid);
- }
- getparam()
- },[params])
+
   const [showPassword, setShowPassword] = useState(true);
   const [showConfirmPassword, setShowConfirmPassword] = useState(true);
 
@@ -54,6 +53,7 @@ export default function UserSignup({params}:{params:Promise<{signupid:string}>})
       email: "",
       password: "",
       confirmPassword: "",
+      role: "User",
     },
   });
 
@@ -62,8 +62,8 @@ export default function UserSignup({params}:{params:Promise<{signupid:string}>})
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
-    const {email,name,password} = values
-    registerUser({email,name,password,role:signupid})
+    const {email,name,password,role} = values
+    registerUser({email,name,password,role})
   }
 
   return (
@@ -136,7 +136,7 @@ export default function UserSignup({params}:{params:Promise<{signupid:string}>})
               <FaGoogle size={20} color="white" /> Signup with Google
             </Button>
             <div className="flex justify-center items-center flex-col text-sm text-white">
-              Already have an account? <Link href={`/Login/${signupid}`} className="text-white underline hover:text-red-500">Login</Link>
+              Already have an account? <Link href={`/Login`} className="text-white underline hover:text-red-500">Login</Link>
             </div>
           </Form>
         </div>

@@ -10,20 +10,18 @@ interface ProtectedRouteProps {
   role?: string;
 }
 
-const ProtectedRoute = ({ children, role }: ProtectedRouteProps) => {
+const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { data, isLoading, error } = useGetUserQuery();
   const router = useRouter();
 
   useEffect(() => {
     if (!isLoading) {
-      if (data) {
-        router.replace(`/${role}/Dashboard`);
-      } else {
-        console.error('Authentication error:', error);
-        router.push(`/Login/${role}`);
-      }
+      if (!data) {
+        router.replace(`/Login`);
+      } 
     }
-  }, [isLoading, data, error, router, role]);
+    console.log(data,isLoading)
+  }, [isLoading, data, error, router]);
 
   if (isLoading) {
     return (

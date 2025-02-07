@@ -45,8 +45,7 @@ import { OAuthProvider } from "appwrite";
 
 interface AuthState {
     user:object | null;
-    
-}
+    }
 
 export const authSlice = createApi({
     reducerPath: "authApi",
@@ -107,16 +106,16 @@ export const authSlice = createApi({
                 }
             },
         }),
-        byGoogle: builder.mutation<{ success: boolean; message: string }, {role:string}>({
-            async queryFn({role}) {
+        byGoogle: builder.mutation<{ success: boolean; message: string },void>({
+            async queryFn() {
                 
                 try {
-                 const data =    await account.createOAuth2Session(
+                  await account.createOAuth2Session(
                         OAuthProvider.Google, 
                         
-                        `https://upgraded-space-carnival-445j9g59q5gc7rx6-3000.app.github.dev/${role}`, // redirect here on success
-                        'https://upgraded-space-carnival-445j9g59q5gc7rx6-3000.app.github.dev/fail', // redirect here on failure
-                        ['email', 'profile']  // Request required scopes
+                        `http://localhost:3000/User/Dashboard`, // redirect here on success
+                        'http://localhost:3000/fail', // redirect here on failure
+                       
                     );
 
                   
