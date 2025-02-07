@@ -67,10 +67,10 @@ export default function UserLogin({ params }: { params: Promise<{ loginid: strin
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     loginUser(values)
       .unwrap()
-      .then((data) => {
+      .then((data:any) => {
         if (data) {
           toast.success("Successfully Login")
-          router.push("/User");
+          router.push(`${loginid}/Dashboard`);
         }
       })
       .catch((error) => {

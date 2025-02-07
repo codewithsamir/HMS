@@ -1,12 +1,11 @@
 "use client";
 
-import ProtectedRoute from '@/components/container/Protectedroute';
 import { Button } from '@/components/ui/button';
 import { useGetUserQuery, useLogoutUserMutation, useSetRoleMutation } from '@/store/authSlice';
 import { useRouter, usePathname } from 'next/navigation';
 import React from 'react';
 
-const Page: React.FC = () => {
+const Page = ({params}:{params:{userid:string}}) => {
   const router = useRouter();
   const path = usePathname();
   const [logoutUser] = useLogoutUserMutation();
@@ -16,7 +15,7 @@ const Page: React.FC = () => {
   console.log(data);
 
   return (
-    <ProtectedRoute >
+    <>
       <h1>Welcome to the dashboard</h1>
       <Button
         onClick={() => {
@@ -31,7 +30,7 @@ const Page: React.FC = () => {
           <h2>{data.user.email}</h2>
         </>
       )}
-    </ProtectedRoute>
+    </>
   );
 };
 
