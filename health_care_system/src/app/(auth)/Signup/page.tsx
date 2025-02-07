@@ -20,7 +20,9 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import Header from "@/components/Landingpage/Header"
 
-import { useByGoogleMutation, useRegisterUserMutation } from "@/store/authSlice"
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+
+
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Username must be at least 2 characters." }),
@@ -39,8 +41,7 @@ const formSchema = z.object({
 
 export default function UserSignup() {
   
-   const [registerUser] = useRegisterUserMutation();
-   const [byGoogle] =  useByGoogleMutation();
+  
    
 
   const [showPassword, setShowPassword] = useState(true);
@@ -63,7 +64,7 @@ export default function UserSignup() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
     const {email,name,password,role} = values
-    registerUser({email,name,password,role})
+    
   }
 
   return (
@@ -73,7 +74,7 @@ export default function UserSignup() {
         <div className="w-full max-w-md px-4 py-6 sm:p-8 space-y-6 bg-blue-500 rounded-lg shadow-md">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <h2 className="text-2xl font-bold text-center text-white capitalize">{signupid} Signup</h2>
+              <h2 className="text-2xl font-bold text-center text-white capitalize"> Signup</h2>
               <FormField
                 control={form.control}
                 name="name"
@@ -128,10 +129,32 @@ export default function UserSignup() {
                   </FormItem>
                 )}
               />
+                   <FormField
+                  control={form.control}
+                  name="role"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-white">Role</FormLabel>
+                      <FormControl>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <SelectTrigger className="w-full text-white focus:ring-0">
+                            <SelectValue placeholder="Select a Role" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="User">User</SelectItem>
+                            <SelectItem value="Doctor">Doctor</SelectItem>
+                            <SelectItem value="Admin">Admin</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               <Button type="submit" className="bg-white text-black hover:bg-red-500 hover:text-white w-full">Signup</Button>
             </form>
             <Button
-            onClick={()=>byGoogle()}
+            
             className="bg-black w-full px-4 py-5 rounded-lg shadow-md text-white hover:bg-red-500 hover:text-white">
               <FaGoogle size={20} color="white" /> Signup with Google
             </Button>

@@ -19,7 +19,7 @@ export default function LandingPage() {
           <div className="max-w-4xl mx-auto">
             <h1 className="text-5xl font-extrabold mb-6 leading-tight">Your Health, Our Priority</h1>
             <p className="text-xl mb-8 italic">Book appointments with expert doctors in just a few clicks.</p>
-            <Link href="/Login/User">
+            <Link href="/Login">
               <Button variant="secondary" className="px-8 py-4 rounded-full shadow-lg">Get Started</Button>
             </Link>
           </div>

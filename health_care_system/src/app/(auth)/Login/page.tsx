@@ -18,7 +18,7 @@ import { FaEye, FaEyeSlash, FaGoogle, FaUser } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Header from "@/components/Landingpage/Header";
-import { useByGoogleMutation, useLoginUserMutation } from "@/store/authSlice";
+
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import ProtectedRoute from "@/components/container/Protectedroute";
@@ -44,8 +44,7 @@ const formSchema = z.object({
 
 export default function UserLogin() {
 
-  const [loginUser, { isLoading: loginloading }] = useLoginUserMutation();
-  const [byGoogle, { isLoading: googleloading }] = useByGoogleMutation();
+ 
   const router = useRouter();
 
 
@@ -71,17 +70,7 @@ export default function UserLogin() {
   // 2. Define a submit handler.
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     console.log(values);
-    loginUser(values)
-      .unwrap()
-      .then((data:any) => {
-        if (data) {
-          toast.success("Successfully Login");
-          router.push(`/${role}/Dashboard`);
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+
   };
 
   return (
@@ -167,16 +156,16 @@ export default function UserLogin() {
                 <Button
                   type="submit"
                   className="bg-white text-black hover:bg-red-500 hover:text-white w-full"
-                  disabled={loginloading}
+                 
                 >
-                  {loginloading ? "Loading..." : "Submit"}
+                  {"Submit"}
                 </Button>
               </form>
 
               <Button
-                onClick={() => byGoogle()}
+               
                 className="bg-black w-full max-w-md px-4 py-5 rounded-lg shadow-md text-white hover:bg-red-500 hover:text-white"
-                disabled={googleloading}
+          
               >
                 <FaGoogle size={20} color="white" />
                 Login with Google
