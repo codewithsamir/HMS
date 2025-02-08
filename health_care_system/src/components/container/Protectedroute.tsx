@@ -12,33 +12,34 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute = ({ children, role }: ProtectedRouteProps) => {
   const { getUser, user, hydrated } = useAuthStore();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!user); // Only set loading if user is null
   const router = useRouter();
 
   useEffect(() => {
     const fetchUser = async () => {
-      await getUser();
+      if (!user) { // Fetch only if user is null
+        await getUser();
+      }
       setLoading(false);
     };
 
-    if (!hydrated) return;
-    // if(!user) return;
-    fetchUser();
-    console.log("it p ",user,hydrated)
-  }, [getUser, hydrated]);
+    if (hydrated) {
+      fetchUser();
+    }
+  }, [getUser, hydrated, user]);
 
   useEffect(() => {
     if (!loading && !user) {
       router.replace(`/Login/${role}`);
-    } else if (!loading && role && user?.prefs?.role !== role) {
-      // router.push("/unauthorized");
     }
   }, [user, role, loading, router]);
 
-  
-  if (loading || !hydrated) return <Loaderbgwrapper>
-  <Spinner size={60} />
-  </Loaderbgwrapper>;
+  if (loading || !hydrated)
+    return (
+      <Loaderbgwrapper>
+        <Spinner size={60} />
+      </Loaderbgwrapper>
+    );
 
   return <>{children}</>;
 };

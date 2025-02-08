@@ -5,11 +5,13 @@ import InfoCard from "../Infocard";
 
 import { FaCalendarAlt, FaEnvelopeOpenText, FaClipboardList } from 'react-icons/fa';
 import { Calendar } from "@/components/ui/calendar";
+import { ProfileForm } from "./Profileform";
 
 
 
 const Dashboard = () => {
   const [date, setDate] = useState<Date | undefined>(new Date())
+
   const [appointments, setAppointments] = useState([
     { id: 'A001', doctor: 'Dr. Smith', date: '2025-02-10', status: 'Scheduled' },
     { id: 'A002', doctor: 'Dr. Johnson', date: '2025-02-12', status: 'Completed' },
@@ -63,14 +65,15 @@ const Dashboard = () => {
     
       />
     </div>
-    <div className="calender flex justify-center py-6">
+    {/* <div className="calender  ">
     <Calendar
       mode="single"
       selected={date}
       onSelect={setDate}
       className="rounded-md border shadow  bg-white"
     />
-    </div>
+    </div> */}
+
     </div>
   )
 }

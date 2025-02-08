@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { IoClose } from 'react-icons/io5'
 import { Button } from '../ui/button'
+import { FaBackward, FaStepBackward } from 'react-icons/fa'
 
 
 const Sidebar = ({menu,page,sidebarstate,setsidebarstate}:any) => {
@@ -23,13 +24,14 @@ const Sidebar = ({menu,page,sidebarstate,setsidebarstate}:any) => {
   },[path])
   
   return (
-    <aside className={`bg-blue-400 transition-all   min-h-[92vh]  overflow-hidden  sticky top-[65px]
+    <aside className={`bg-blue-400 transition-all   min-h-[92vh] z-40 overflow-hidden  sticky top-[65px] 
     ${sidebarstate ? "w-0" : "w-[220px]"}
      lg:w-[220px]`}>
-      <IoClose  className='lg:hidden cursor-pointer text-4xl absolute right-2 top-2 text-white'
+      
+      <FaStepBackward  className='lg:hidden cursor-pointer text-3xl absolute right-[-6px] z-10 top-2 text-white'
       onClick={()=>setsidebarstate(!sidebarstate)}
       />
-        <div className='flex flex-col py-12 lg:py-5   w-full items-center gap-4  '>
+        <div className='flex flex-col py-10 lg:py-5   w-full items-center gap-4  '>
        {menu && menu.map((menu:any)=>
      <Link href={`/${page}/${menu.name}`} key={menu.name}>   <Button className={`text-md flex gap-6 items-center justify-start  text-white ${menu.name === activebtn ? "bg-blue-700": "bg-blue-500"}  w-[170px] p-2 border-none rounded-md hover:bg-blue-700 `} >{menu.icon} {menu.name}</Button></Link>
        )}

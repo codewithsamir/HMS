@@ -24,6 +24,7 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/
 import { useAuthStore } from "@/store/Auth"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
+import Spinner from "@/components/ui/spinner"
 
 
 
@@ -47,7 +48,8 @@ export default function UserSignup({params}:{params:{signupid:string}}) {
 const router = useRouter()
   const [showPassword, setShowPassword] = useState(true);
   const [showConfirmPassword, setShowConfirmPassword] = useState(true);
-    useAuthStore
+  const [loading,setloading] =  useState<boolean>(false)
+
     const {registerUser,loginWithGoogle} = useAuthStore()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -74,12 +76,15 @@ const router = useRouter()
   const toggleShowConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
 
   const onSubmit = async(values: z.infer<typeof formSchema>) =>{
+    setloading(true)
     console.log(values);
     const {email,name,password} = values
     const res = await registerUser(name,email,password,signupid)
     if(res.success){
       toast.success("User registered successfully")
-      router.push("/User/Login")
+      router.push(`/${signupid}/Dashboard`)
+    setloading(false)
+
       }else{
         toast.error(res.error?.message)
         }
@@ -92,7 +97,7 @@ const router = useRouter()
         <div className="w-full max-w-md px-4 py-6 sm:p-8 space-y-6 bg-blue-500 rounded-lg shadow-md">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <h2 className="text-2xl font-bold text-center text-white capitalize"> Signup</h2>
+              <h2 className="text-2xl font-bold text-center text-white capitalize">{signupid} Signup</h2>
               <FormField
                 control={form.control}
                 name="name"
@@ -148,9 +153,14 @@ const router = useRouter()
                 )}
               />
             
-              <Button type="submit" className="bg-white text-black hover:bg-red-500 hover:text-white w-full">Signup</Button>
+              <Button type="submit"
+              disabled={loading}
+              className="bg-white text-black hover:bg-red-500 hover:text-white w-full">
+                {loading ? <Spinner/> : "Signup"}
+                </Button>
             </form>
             <Button
+              disabled={loading}
             onClick={()=>loginWithGoogle(signupid)}
             className="bg-black w-full px-4 py-5 rounded-lg shadow-md text-white hover:bg-red-500 hover:text-white">
               <FaGoogle size={20} color="white" /> Signup with Google

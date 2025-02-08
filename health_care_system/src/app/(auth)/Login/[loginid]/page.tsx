@@ -30,6 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAuthStore } from "@/store/Auth";
+import Spinner from "@/components/ui/spinner";
 
 const formSchema = z.object({
   email: z.string().min(2, {
@@ -44,6 +45,7 @@ const formSchema = z.object({
 export default function UserLogin({params}:{params:{loginid:string}}) {
   const [loginid, setloginid] = useState<string>("");
 const {loginUser,loginWithGoogle} = useAuthStore()
+const [loading,setloading] =  useState<boolean>(false)
  
   const router = useRouter();
 
@@ -77,11 +79,17 @@ const {loginUser,loginWithGoogle} = useAuthStore()
   // 2. Define a submit handler.
   const onSubmit =async (values: z.infer<typeof formSchema>) => {
     console.log(values);
+    setloading(true)
    const loginResponse = await  loginUser(values.email, values.password)
     if(loginResponse.success){
       toast.success("Login Successful")
       router.push("/User/Dashboard")
-  };
+      setloading(false)
+  }else{
+    toast.error(loginResponse.error?.message)
+    setloading(false)
+
+    }
   }
   return (
     <>
@@ -91,7 +99,7 @@ const {loginUser,loginWithGoogle} = useAuthStore()
           <div className="w-full max-w-md px-4 py-6 sm:p-8 space-y-6 bg-blue-500 rounded-lg shadow-md">
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <h2 className="text-2xl font-bold text-center text-white capitalize"> Login</h2>
+                <h2 className="text-2xl font-bold text-center text-white capitalize">{loginid} Login</h2>
                 <FormField
                   control={form.control}
                   name="email"
@@ -145,9 +153,9 @@ const {loginUser,loginWithGoogle} = useAuthStore()
                 <Button
                   type="submit"
                   className="bg-white text-black hover:bg-red-500 hover:text-white w-full"
-                 
+                  disabled={loading}
                 >
-                  {"Submit"}
+                  {loading ? <Spinner/> :  "Submit"}
                 </Button>
               </form>
 
@@ -156,6 +164,7 @@ const {loginUser,loginWithGoogle} = useAuthStore()
                await loginWithGoogle(loginid)
                
                }}
+               disabled={loading}
                 className="bg-black w-full max-w-md px-4 py-5 rounded-lg shadow-md text-white hover:bg-red-500 hover:text-white"
           
               >

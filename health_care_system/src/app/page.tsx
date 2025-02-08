@@ -12,10 +12,11 @@ export default function LandingPage() {
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-blue-50 to-white">
       {/* Header */}
      <Header/>
+     
 
       {/* Hero Section */}
       <main className="flex-1">
-        <section className="bg-gradient-to-r from-blue-500 to-blue-700 text-white py-24 text-center px-4">
+        <section className=" bg-[url('/bg2.jpg')] w-full bg-cover bg-center bg-blend-multiply bg-blue-300   text-white py-24 text-center px-4">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-5xl font-extrabold mb-6 leading-tight">Your Health, Our Priority</h1>
             <p className="text-xl mb-8 italic">Book appointments with expert doctors in just a few clicks.</p>

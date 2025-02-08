@@ -56,11 +56,11 @@ const Myinfo = () => {
           </div>
         </div>
       </CardContent>
-      <CardFooter>
+      {/* <CardFooter>
         <Button variant="outline" className="w-full">
           Update Information
         </Button>
-      </CardFooter>
+      </CardFooter> */}
     </Card>
   </div>
   );

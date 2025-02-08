@@ -7,9 +7,12 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { Button } from '../ui/button'
 import { useAuthStore } from '@/store/Auth'
+import { Avatar, AvatarFallback } from '../ui/avatar'
+
 
 const Header = ({logo,setsidebarstate,sidebarstate}:any) => {
-const {logoutUser} = useAuthStore()
+const {logoutUser,user} = useAuthStore()
+console.log(user)
 const route = useRouter()
 
   return (
@@ -20,11 +23,17 @@ const route = useRouter()
         />
             <h2 className='text-white text-lg  md:text-2xl font-bold'>{logo} Dashbaord</h2>
         </div>
-        <Button variant="outline" onClick={async()=>{ 
+      <div className="last flex gap-2">
+      <Button variant="outline" onClick={async()=>{ 
          await logoutUser()
           toast.success("Successfully Logout ")
           route.push(`/Login/${logo}`)}}>
             logout</Button>
+      <Avatar >
+  <AvatarFallback className=' text-white text-3xl bg-blue-950 select-none' >{user && user.name[0]}</AvatarFallback>
+</Avatar>
+      
+      </div>
     </header>
   )
 }

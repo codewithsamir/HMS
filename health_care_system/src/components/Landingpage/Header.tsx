@@ -1,3 +1,4 @@
+"use client"
 import Link from 'next/link';
 import React, { useState } from 'react';
 import { FaStethoscope, FaUser, FaUserMd, FaUserShield, FaBars, FaTimes, FaHome } from 'react-icons/fa';

@@ -18,7 +18,7 @@ const Page = ({params}:{params:{userid:string}}) => {
       setuserid(userid[0]);
     }
     user();
-    console.log("userid",userid);
+    // console.log("userid",userid);
   }, [params])
   
  

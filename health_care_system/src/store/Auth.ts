@@ -30,6 +30,7 @@ export const useAuthStore = create<AuthState>()(
       session: null,
       jwt: null,
       hydrated: false,
+      error:null,
 
       setHydrated() {
         set({ hydrated: true });
@@ -43,13 +44,23 @@ export const useAuthStore = create<AuthState>()(
           set({ session, user });
         } catch (error) {
           console.log(error);
+          
         }
       },
 
       async registerUser(name, email, password, role) {
         try {
-          await account.create(ID.unique(), email, password, name);
-          await account.updatePrefs({ role });
+         await account.create(ID.unique(), email, password, name);
+                   // Log in the newly created user
+        const loginResponse = await useAuthStore.getState().loginUser(email, password);
+    
+              if (!loginResponse.success) {
+                throw new Error("Login failed after registration");
+              }
+
+
+         await useAuthStore.getState().setRole(role);
+          // console.log(res,roles)
           return { success: true };
         } catch (error) {
           return { success: false, error: error instanceof AppwriteException ? error : null };
