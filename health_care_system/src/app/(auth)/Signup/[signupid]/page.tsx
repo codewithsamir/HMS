@@ -21,15 +21,15 @@ import Link from "next/link"
 import Header from "@/components/Landingpage/Header"
 
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useAuthStore } from "@/store/Auth"
+import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Username must be at least 2 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
-  role: z.enum(['User', 'Doctor', 'Admin'], {
-    message: "Role must be one of: admin, user, or doctor.",
-  }),
   password: z.string().min(6, { message: "Password must be at least 6 characters." }),
   confirmPassword: z.string().min(6, { message: "Confirm password must be at least 6 characters." })
 }).refine((data) => data.password === data.confirmPassword, {
@@ -39,14 +39,16 @@ const formSchema = z.object({
  
 });
 
-export default function UserSignup() {
+export default function UserSignup({params}:{params:{signupid:string}}) {
   
   
+  const [signupid, setsignupid] = useState<string>("");
    
-
+const router = useRouter()
   const [showPassword, setShowPassword] = useState(true);
   const [showConfirmPassword, setShowConfirmPassword] = useState(true);
-
+    useAuthStore
+    const {registerUser,loginWithGoogle} = useAuthStore()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -54,17 +56,33 @@ export default function UserSignup() {
       email: "",
       password: "",
       confirmPassword: "",
-      role: "User",
+      
     },
   });
+
+
+  useEffect(() => {
+    const getrole = async () => {
+      const {signupid} = await params;
+      setsignupid(signupid);
+    };
+    getrole();
+  
+  }, [params]);
 
   const toggleShowPassword = () => setShowPassword(!showPassword);
   const toggleShowConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  const onSubmit = async(values: z.infer<typeof formSchema>) =>{
     console.log(values);
-    const {email,name,password,role} = values
-    
+    const {email,name,password} = values
+    const res = await registerUser(name,email,password,signupid)
+    if(res.success){
+      toast.success("User registered successfully")
+      router.push("/User/Login")
+      }else{
+        toast.error(res.error?.message)
+        }
   }
 
   return (
@@ -129,37 +147,16 @@ export default function UserSignup() {
                   </FormItem>
                 )}
               />
-                   <FormField
-                  control={form.control}
-                  name="role"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-white">Role</FormLabel>
-                      <FormControl>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                          <SelectTrigger className="w-full text-white focus:ring-0">
-                            <SelectValue placeholder="Select a Role" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="User">User</SelectItem>
-                            <SelectItem value="Doctor">Doctor</SelectItem>
-                            <SelectItem value="Admin">Admin</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+            
               <Button type="submit" className="bg-white text-black hover:bg-red-500 hover:text-white w-full">Signup</Button>
             </form>
             <Button
-            
+            onClick={()=>loginWithGoogle(signupid)}
             className="bg-black w-full px-4 py-5 rounded-lg shadow-md text-white hover:bg-red-500 hover:text-white">
               <FaGoogle size={20} color="white" /> Signup with Google
             </Button>
             <div className="flex justify-center items-center flex-col text-sm text-white">
-              Already have an account? <Link href={`/Login`} className="text-white underline hover:text-red-500">Login</Link>
+              Already have an account? <Link href={`/Login/${signupid}`} className="text-white underline hover:text-red-500">Login</Link>
             </div>
           </Form>
         </div>

@@ -23,7 +23,7 @@ const Sidebar = ({menu,page,sidebarstate,setsidebarstate}:any) => {
   },[path])
   
   return (
-    <aside className={`bg-blue-400 transition-all   min-h-[91vh]  overflow-hidden  sticky top-[80px]
+    <aside className={`bg-blue-400 transition-all   min-h-[92vh]  overflow-hidden  sticky top-[65px]
     ${sidebarstate ? "w-0" : "w-[220px]"}
      lg:w-[220px]`}>
       <IoClose  className='lg:hidden cursor-pointer text-4xl absolute right-2 top-2 text-white'

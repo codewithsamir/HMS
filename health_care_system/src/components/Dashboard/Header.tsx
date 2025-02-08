@@ -6,9 +6,10 @@ import { MdDashboardCustomize } from 'react-icons/md'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { Button } from '../ui/button'
+import { useAuthStore } from '@/store/Auth'
 
 const Header = ({logo,setsidebarstate,sidebarstate}:any) => {
-
+const {logoutUser} = useAuthStore()
 const route = useRouter()
 
   return (
@@ -19,9 +20,10 @@ const route = useRouter()
         />
             <h2 className='text-white text-lg  md:text-2xl font-bold'>{logo} Dashbaord</h2>
         </div>
-        <Button variant="outline" onClick={()=>{ 
+        <Button variant="outline" onClick={async()=>{ 
+         await logoutUser()
           toast.success("Successfully Logout ")
-          route.push("/")}}>
+          route.push(`/Login/${logo}`)}}>
             logout</Button>
     </header>
   )

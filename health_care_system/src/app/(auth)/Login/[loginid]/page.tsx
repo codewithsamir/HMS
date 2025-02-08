@@ -29,6 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useAuthStore } from "@/store/Auth";
 
 const formSchema = z.object({
   email: z.string().min(2, {
@@ -37,16 +38,23 @@ const formSchema = z.object({
   password: z.string().min(6, {
     message: "Password must be at least 6 characters.",
   }),
-  role: z.enum(['User', 'Doctor', 'Admin'], {
-    message: "Role must be one of: admin, user, or doctor.",
-  }),
+
 });
 
-export default function UserLogin() {
-
+export default function UserLogin({params}:{params:{loginid:string}}) {
+  const [loginid, setloginid] = useState<string>("");
+const {loginUser,loginWithGoogle} = useAuthStore()
  
   const router = useRouter();
 
+  useEffect(() => {
+    const getrole = async () => {
+      const {loginid} = await params;
+      setloginid(loginid)
+    };
+    getrole();
+  
+  }, [params]);
 
 
   const [showpassword, setShowpassword] = useState(true);
@@ -57,25 +65,27 @@ export default function UserLogin() {
     defaultValues: {
       email: "",
       password: "",
-      role: "User",
+      
     },
   });
-//   console.log(form.control._defaultValues.role)
-  const role = form.control._defaultValues.role
+
 
   const togglePasswordVisibility = () => {
     setShowpassword((prev) => !prev);
   };
 
   // 2. Define a submit handler.
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit =async (values: z.infer<typeof formSchema>) => {
     console.log(values);
-
+   const loginResponse = await  loginUser(values.email, values.password)
+    if(loginResponse.success){
+      toast.success("Login Successful")
+      router.push("/User/Dashboard")
   };
-
+  }
   return (
     <>
-      <ProtectedRoute >
+      <ProtectedRoute role={loginid}>
         <Header />
         <Bgwrapper>
           <div className="w-full max-w-md px-4 py-6 sm:p-8 space-y-6 bg-blue-500 rounded-lg shadow-md">
@@ -125,28 +135,7 @@ export default function UserLogin() {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="role"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-white">Role</FormLabel>
-                      <FormControl>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                          <SelectTrigger className="w-full text-white focus:ring-0">
-                            <SelectValue placeholder="Select a Role" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="User">User</SelectItem>
-                            <SelectItem value="Doctor">Doctor</SelectItem>
-                            <SelectItem value="Admin">Admin</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+           
                 <p className="flex justify-center items-center flex-col text-sm text-white">
                   <Link href="/forgotpassword" className="text-white underline hover:text-red-500">
                     Forgot password
@@ -163,7 +152,10 @@ export default function UserLogin() {
               </form>
 
               <Button
+               onClick={async()=>{
+               await loginWithGoogle(loginid)
                
+               }}
                 className="bg-black w-full max-w-md px-4 py-5 rounded-lg shadow-md text-white hover:bg-red-500 hover:text-white"
           
               >
@@ -173,14 +165,15 @@ export default function UserLogin() {
 
               <div className="flex justify-center items-center flex-col text-sm text-white">
                 If you donot have an account,{" "}
-                <Link href={`/Signup`} className="text-white underline hover:text-red-500">
+                <Link href={`/Signup/${loginid}`} className="text-white underline hover:text-red-500">
                   Signup
                 </Link>
               </div>
             </Form>
           </div>
         </Bgwrapper>
-      </ProtectedRoute>
+        </ProtectedRoute>
     </>
   );
 }
+

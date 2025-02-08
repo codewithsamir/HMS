@@ -20,7 +20,7 @@ const Layout = ({
   
 
   return (
-    <ProtectedRoute >
+    <ProtectedRoute role="User" >
       <Header logo="User" setsidebarstate={setsidebarstate} sidebarstate={sidebarstate}/>
       <div className="flex ">
         <div className="flex-shrink-0 ">

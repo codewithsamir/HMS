@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import React, { useState } from 'react';
 import { FaStethoscope, FaUser, FaUserMd, FaUserShield, FaBars, FaTimes, FaHome } from 'react-icons/fa';
+import { Button } from '../ui/button';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,10 +31,10 @@ const Header = () => {
         <div className={`md:flex space-x-6 ${isOpen ? 'fixed right-0 top-0 bg-gradient-to-r from-blue-200 to-blue-700 bottom-0 px-6 text-white z-40 ' : 'hidden'} md:block text-gray-700`}>
 
         <div className="md:hidden  flex justify-end py-4">
-          <button onClick={toggleMenu} className="text-gray-700 focus:outline-none">
+          <Button variant="ghost" onClick={toggleMenu} className="text-gray-700 focus:outline-none">
         
           <FaTimes className=" text-white text-2xl" />
-          </button>
+          </Button>
         </div>
 
        
@@ -42,9 +43,17 @@ const Header = () => {
               <FaHome className="text-blue-600 w-5 h-5" />
               <span className="font-medium ">Home</span>
             </Link>
-            <Link href="/Login" className="flex items-center gap-2  hover:underline transition ">
+            <Link href="/Login/User" className="flex items-center gap-2  hover:underline transition ">
               <FaUser className="text-blue-600 w-5 h-5" />
               <span className="font-medium ">User Login</span>
+            </Link>
+            <Link href="/Login/Doctor" className="flex items-center gap-2  hover:underline transition ">
+              <FaUserMd className="text-blue-600 w-5 h-5" />
+              <span className="font-medium ">Doctor Login</span>
+            </Link>
+            <Link href="/Login/Admin" className="flex items-center gap-2  hover:underline transition ">
+              <FaUserShield className="text-blue-600 w-5 h-5" />
+              <span className="font-medium ">Admin Login</span>
             </Link>
         
           </div>
