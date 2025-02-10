@@ -87,6 +87,9 @@ const router = useRouter()
 
       }else{
         toast.error(res.error?.message)
+
+    setloading(false)
+
         }
   }
 

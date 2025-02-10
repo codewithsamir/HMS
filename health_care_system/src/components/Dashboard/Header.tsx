@@ -16,7 +16,7 @@ console.log(user)
 const route = useRouter()
 
   return (
-    <header className=' sticky top-0 z-[999] py-4 px-2 sm:px-8 md:px-16 bg-blue-600 flex justify-between items-center '>
+    <header className=' sticky top-0 z-[999]                                                                                                                                                                                                                                      11q py-4 px-2 sm:px-8 md:px-16 bg-blue-600 flex justify-between items-center '>
         <div className="logo flex items-center gap-5">
         <MdDashboardCustomize className='lg:hidden cursor-pointer text-white text-4xl  '
         onClick={()=>setsidebarstate(!sidebarstate)}

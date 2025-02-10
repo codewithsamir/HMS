@@ -13,7 +13,7 @@ export default async function createMedicalHistoryCollection() {
 
     await Promise.all([
         databases.createStringAttribute(db, medicalHistory, "patient_id", 50, true),
-        databases.createStringAttribute(db, medicalHistory, "doctor_id", 50, true),
+    
         databases.createStringAttribute(db, medicalHistory, "diagnosis", 500, true),
         databases.createStringAttribute(db, medicalHistory, "treatment", 1000, true),
         databases.createDatetimeAttribute(db, medicalHistory, "date", true),

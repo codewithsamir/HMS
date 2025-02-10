@@ -15,7 +15,7 @@ export default async function createFeedbackCollection() {
         databases.createStringAttribute(db, feedback, "patient_id", 50, true),
         databases.createStringAttribute(db, feedback, "doctor_id", 50, true),
         databases.createFloatAttribute(db, feedback, "rating", true),
-        databases.createStringAttribute(db, feedback, "comments", 1000, false),
+        databases.createStringAttribute(db, feedback, "comments", 1000, true),
         databases.createDatetimeAttribute(db, feedback, "date", true),
     ]);
     console.log("Feedback Attributes Created");

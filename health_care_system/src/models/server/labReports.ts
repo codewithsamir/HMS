@@ -12,7 +12,8 @@ export default async function createLabReportsCollection() {
     console.log("Lab Reports Collection Created");
 
     await Promise.all([
-        databases.createStringAttribute(db, labReports, "patient_id", 50, true),
+        databases.createStringAttribute(db, labReports, "patientid", 50, true),
+        databases.createStringAttribute(db, labReports, "doctorid", 50, true),
         databases.createStringAttribute(db, labReports, "report_type", 100, true),
         databases.createStringAttribute(db, labReports, "result", 1000, true),
         databases.createDatetimeAttribute(db, labReports, "date", true),

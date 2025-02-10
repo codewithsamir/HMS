@@ -18,6 +18,9 @@ export default async function createDoctorInfoCollection() {
         databases.createStringAttribute(db, doctorInformation, "contact", 20, true),
         databases.createStringAttribute(db, doctorInformation, "email", 100, true),
         databases.createStringAttribute(db, doctorInformation, "imageUrl", 500, true),
+        databases.createStringAttribute(db, doctorInformation, "doctorid", 100, true),
+        databases.createStringAttribute(db, doctorInformation, "imageid", 100, true),
+
     ]);
     console.log("Doctor Info Attributes Created");
 }

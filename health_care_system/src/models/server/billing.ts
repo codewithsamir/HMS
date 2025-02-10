@@ -13,6 +13,7 @@ export default async function createBillingCollection() {
 
     await Promise.all([
         databases.createStringAttribute(db, billing, "patient_id", 50, true),
+        databases.createStringAttribute(db, billing, "doctorid", 50, true),
         databases.createFloatAttribute(db, billing, "amount", true),
         databases.createStringAttribute(db, billing, "payment_method", 50, true),
         databases.createDatetimeAttribute(db, billing, "date", true),
