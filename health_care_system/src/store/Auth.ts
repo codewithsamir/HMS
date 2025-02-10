@@ -43,6 +43,8 @@ export const useAuthStore = create<AuthState>()(
           // console.log("it g",user,session)
           set({ session, user });
         } catch (error) {
+          set({ session:null, user:null });
+
           console.log(error);
           
         }
