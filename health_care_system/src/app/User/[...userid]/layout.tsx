@@ -3,6 +3,7 @@ import ProtectedRoute from "@/components/container/Protectedroute";
 import Header from "@/components/Dashboard/Header";
 import Sidebar from "@/components/Dashboard/Sidebar";
 import { ProfileForm } from "@/components/Dashboard/UserDashboard/Profileform";
+import { useAuthStore } from "@/store/Auth";
 import { useUserStore } from "@/store/User";
 import { useEffect, useState } from "react";
 import { MdDashboard, MdEvent, MdInfo } from "react-icons/md";
@@ -15,6 +16,7 @@ const Layout = ({
     const [sidebarstate, setsidebarstate] = useState<boolean>(false)
   
     const {profile,fetchUserProfile} = useUserStore()
+    const {user} = useAuthStore()
    
   const menu = [
     { name: "Dashboard", icon: <MdDashboard /> },
@@ -24,15 +26,15 @@ const Layout = ({
   ];
 
   useEffect(()=>{
-    const user = async ()=>{
-      if(!profile){
+    const profiledata = async ()=>{
+      if(user){
 
         await fetchUserProfile()
       }
     }
 
-    user()
-  },[profile,fetchUserProfile])
+    profiledata()
+  },[profile,fetchUserProfile,user])
   
 console.log("i",profile)
   return (
