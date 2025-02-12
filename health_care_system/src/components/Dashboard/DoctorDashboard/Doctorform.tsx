@@ -19,6 +19,7 @@ import { useState } from "react"
 import Spinner from "@/components/ui/spinner"
 import { Select, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { SelectContent, SelectGroup, SelectLabel } from "@radix-ui/react-select"
+import { useDoctorStore } from "@/store/Doctor"
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -27,12 +28,10 @@ const formSchema = z.object({
   specialization: z.string().min(10, {
     message: "Specialization must be at least 10 characters.",
   }),
-  experience: z.string().min(1, {
+  experience: z.number().min(1, {
     message: "Experience be required for the profile.",
   }),
-  age: z.string().refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
-    message: "Age must be a valid number.",
-  }),
+ 
   gender: z.enum(["male", "female", "other", "Male", "Female", "Other"], {
     message: "Gender must be 'male', 'female', or 'other'.",
   }),
@@ -48,14 +47,15 @@ const formSchema = z.object({
 export default function ProfileForm() {
   const { uploadProfileImage, saveUserProfile } = useUserStore()
   const [loading, setLoading] = useState(false)
+  const {uploadDoctorImage,saveDoctorProfile} = useDoctorStore()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       specialization: "",
-      experience: "",
-      age: "",
+      experience: 0,
+     
       gender: undefined,
       contact: "",
       image: undefined,
@@ -65,23 +65,22 @@ export default function ProfileForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values)
     setLoading(true)
-    const { name, specialization, experience, age, gender, contact, image } = values
+    const { name, specialization, experience,  gender, contact, image } = values
 
-    // const res = await uploadProfileImage(image)
-    // if (res) {
-    //   const res2 = await saveUserProfile({
-    //     name,
-    //     specialization,
-    //     experience,
-    //     age: Number(age),
-    //     gender,
-    //     contact,
-    //     ...res,
-    //   })
-    //   if (res2) {
-    //     setLoading(false)
-    //   }
-    // }
+    const res = await uploadDoctorImage(image)
+    if (res) {
+      const res2 = await saveDoctorProfile({
+        name,
+        specialization,
+        experience,
+       gender,
+        contact,
+        ...res,
+      })
+      if (res2) {
+        setLoading(false)
+      }
+    }
   }
 
   return (
@@ -132,19 +131,7 @@ export default function ProfileForm() {
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="age"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Age</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter your Age" {...field} className="placeholder:text-gray-200 focus-visible:ring-0 text-white" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+         
 
           <FormField
             control={form.control}

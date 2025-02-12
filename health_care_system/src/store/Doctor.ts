@@ -1,0 +1,124 @@
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { immer } from "zustand/middleware/immer";
+import { storage, databases } from "@/models/client/config";
+import { ID, Query } from "appwrite";
+import { toast } from "sonner";
+import { useAuthStore } from "./Auth"; // Import the Auth Store
+import { db, ImageBucket, doctorInformation } from "@/models/name";
+import env from "@/app/env";
+
+export interface DoctorProfile {
+  doctorid: string;
+  name: string;
+  specialization: string;
+  experience: number;
+  contact: string;
+  imageUrl: string;
+  imageid: string;
+  gender:string;
+  
+}
+
+interface DoctorState {
+  profile: DoctorProfile | null;
+  loading: boolean;
+  uploadDoctorImage(image: File): Promise<{ imageUrl: string; imageid: string } | null>;
+  saveDoctorProfile(data: Omit<DoctorProfile, "doctorid">): Promise<boolean>;
+  fetchDoctorProfile(): Promise<void>;
+}
+
+export const useDoctorStore = create<DoctorState>()(
+  persist(
+    immer((set, get) => ({
+      profile: null,
+      loading: false,
+
+      async uploadDoctorImage(image) {
+        try {
+          const user = useAuthStore.getState().user; // Get authenticated user
+          if (!user) {
+            toast.error("User not authenticated.");
+            return null;
+          }
+
+          const imageUploadResponse = await storage.createFile(
+            ImageBucket, // Storage Bucket ID
+            ID.unique(),
+            image
+          );
+
+          const imageUrl = `https://cloud.appwrite.io/v1/storage/buckets/${ImageBucket}/files/${imageUploadResponse.$id}/view?project=${env.appwrite.projectId}`;
+
+          return { imageUrl, imageid: imageUploadResponse.$id };
+        } catch (error) {
+          console.error("Image Upload Error:", error);
+          toast.error("Failed to upload image.");
+          return null;
+        }
+      },
+
+      async saveDoctorProfile(data) {
+        try {
+          const user = useAuthStore.getState().user; // Get authenticated user
+          if (!user) {
+            toast.error("User not authenticated.");
+            return false;
+          }
+
+          const profileData = {
+            doctorid: user.$id,
+            ...data,
+          };
+
+          await databases.createDocument(
+            db,                 // Database ID
+            doctorInformation,  // Collection ID
+            ID.unique(),
+            profileData
+          );
+
+          // Update local state with new profile data
+          set((state) => {
+            state.profile = profileData;
+          });
+
+          toast.success("Doctor profile saved successfully.");
+          return true;
+        } catch (error) {
+          console.error("Error saving doctor profile:", error);
+          toast.error("Failed to save doctor profile.");
+          return false;
+        }
+      },
+
+      async fetchDoctorProfile() {
+        try {
+          const user = useAuthStore.getState().user; // Get authenticated user
+          if (!user) return;
+
+          const response = await databases.listDocuments(
+            db,                 // Database ID
+            doctorInformation,  // Collection ID
+            [Query.equal("doctorid", user.$id)]
+          );
+
+          console.log(response, user.$id);
+
+          if (response.total > 0) {
+            set({ profile: response.documents[0] as DoctorProfile });
+          } else {
+            set({ profile: null });
+          }
+        } catch (error) {
+          set({ profile: null });
+          console.error("Error fetching doctor profile:", error);
+          toast.error("Failed to fetch doctor profile.");
+        } finally {
+          set({ loading: false });
+        }
+      },
+    })),
+    { name: "doctor" }
+  )
+);
