@@ -83,7 +83,7 @@ const [loading,setloading] =  useState<boolean>(false)
    const loginResponse = await  loginUser(values.email, values.password)
     if(loginResponse.success){
       toast.success("Login Successful")
-      router.push("/User/Dashboard")
+      router.push(`/${loginid}/Dashboard`)
       setloading(false)
   }else{
     toast.error(loginResponse.error?.message)

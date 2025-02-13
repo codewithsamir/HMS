@@ -26,7 +26,7 @@ const ProtectedRoute = ({ children, role }: ProtectedRouteProps) => {
     if (hydrated) {
       fetchUser();
     }
-  }, [getUser, hydrated, user]);
+  }, [ hydrated]);
 
   useEffect(() => {
     if (!loading && !user) {

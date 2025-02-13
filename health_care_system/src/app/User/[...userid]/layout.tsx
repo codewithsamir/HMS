@@ -34,9 +34,9 @@ const Layout = ({
     }
 
     profiledata()
-  },[profile,fetchUserProfile,user])
+  },[])
   
-console.log("i",profile)
+// console.log("i",profile)
   return (
     <ProtectedRoute role="User" >
       <Header logo="User" setsidebarstate={setsidebarstate} sidebarstate={sidebarstate}/>

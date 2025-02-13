@@ -3,9 +3,8 @@
 import Appointment from '@/components/Dashboard/UserDashboard/Appointment';
 import Dashboard from '@/components/Dashboard/UserDashboard/dashboard';
 import Myinfo from '@/components/Dashboard/UserDashboard/Myinfo';
-import { Button } from '@/components/ui/button';
 
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
 const Page = ({params}:{params:{userid:string}}) => {
@@ -23,9 +22,9 @@ const Page = ({params}:{params:{userid:string}}) => {
   
  
 
-useEffect(() => {
-  console.log("userid",userid);
-}, [userid])
+// useEffect(() => {
+//   console.log("userid",userid);
+// }, [userid])
 
   return (
     <>

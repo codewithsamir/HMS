@@ -102,7 +102,7 @@ export const useUserStore = create<UserState>()(
             ]
           );
 
-            console.log(response,user.$id);
+            // console.log(response,user.$id);
           if (response.total > 0) {
             set({ profile: response.documents[0] as UserProfile });
           } else {

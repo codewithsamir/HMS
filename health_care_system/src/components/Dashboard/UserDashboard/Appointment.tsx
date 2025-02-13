@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaUser, FaClock, FaPen } from "react-icons/fa";
 import { CalendarIcon } from "lucide-react";
@@ -16,6 +16,9 @@ import { z } from "zod";
 import { DatePickerDemo } from "@/components/datepicker";
 import Image from "next/image";
 import Doctorprofile from "./Doctorprofile";
+import { useDoctorStore } from "@/store/Doctor";
+import { useAppointmentStore } from "@/store/Appointment";
+import Spinner from "@/components/ui/spinner";
 
 
 
@@ -34,8 +37,11 @@ const formSchema = z.object({
 
 
 const Appointment = () => {
-  const [selectdoctor, setselectdoctor] = useState<string>("adsfasdfadsf")
-
+  const [selectdoctor, setselectdoctor] = useState<string>("")
+  const {Alldoctor,fetchDoctors} = useDoctorStore()
+  const {bookAppointment} = useAppointmentStore()
+  const [loading, setloading] = useState<boolean>(false)
+  
     // 1. Define your form.
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
@@ -47,15 +53,30 @@ const Appointment = () => {
     })
 
 
+    useEffect(()=>{
+      const doctordata = async()=>{
+         await fetchDoctors()
+        
+      }
+      doctordata()
+
+    },[])
+
+
     // doctorid: "",
     // patient_id: "",
     // status: "confirm",
 
    // 2. Define a submit handler.
-   function onSubmit(values: z.infer<typeof formSchema>) {
+   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setloading(true)
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values)
+    // console.log(values)
+    const data = await bookAppointment({...values, doctor_id: selectdoctor})
+    if(data){
+      setloading(false)
+    }
   }
 
 
@@ -66,17 +87,22 @@ const Appointment = () => {
       {!selectdoctor
         && 
 
-        <div className="doctor_filter relative h-[80vh] border-2 border-green-500 w-full">
+        <div className="doctor_filter relative h-[80vh] border-2 w-[80%] m-auto">
         <div className="searchbox flex w-full  items-center space-x-2">
           <Input  placeholder="Search Doctor Related issue" className="text-black bg-white focus-visible:ring-0 w-full" />
           <Button type="submit" className="w-[200px]">Search</Button>
         </div>
         <div className="display flex justify-center items-center py-6">
 
-          <h2>Search Doctor profile</h2>
-
-          {/* <Doctorprofile/> */}
           
+          {Alldoctor &&
+          
+          
+          Alldoctor.map((data:any, index) => {
+             return <div className="p-2" key={index + 1}>
+                <Doctorprofile  data={data} setselectdoctor={setselectdoctor} />
+              </div>
+})}
         </div>
       </div>
       }
@@ -152,8 +178,11 @@ const Appointment = () => {
             
             
   
-              <Button type="submit" className="bg-white text-black hover:bg-red-500 w-full">
-                Submit
+              <Button 
+              disabled={loading}
+              type="submit" className="bg-white text-black hover:bg-red-500 w-full">
+                
+                {loading ? <Spinner/> : "Submit"}
               </Button>
             </form>
           </Form>

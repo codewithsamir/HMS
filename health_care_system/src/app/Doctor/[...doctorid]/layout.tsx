@@ -5,9 +5,10 @@ import Sidebar from "@/components/Dashboard/Sidebar";
 import Doctorform from "@/components/Dashboard/DoctorDashboard/Doctorform";
 
 import { useAuthStore } from "@/store/Auth";
-import { useUserStore } from "@/store/User";
+
 import { useEffect, useState } from "react";
 import { MdDashboard, MdEvent, MdInfo } from "react-icons/md";
+import { useDoctorStore } from "@/store/Doctor";
 
 const Layout = ({
   children,
@@ -16,8 +17,8 @@ const Layout = ({
 }>) => {
     const [sidebarstate, setsidebarstate] = useState<boolean>(false)
   
-    const {profile,fetchUserProfile} = useUserStore()
     const {user} = useAuthStore()
+    const {profile,fetchDoctorProfile} = useDoctorStore()
    
   const menu = [
     { name: "Dashboard", icon: <MdDashboard /> },
@@ -29,13 +30,12 @@ const Layout = ({
   useEffect(()=>{
     const profiledata = async ()=>{
       if(user){
-
-        await fetchUserProfile()
+await fetchDoctorProfile()
       }
     }
 
     profiledata()
-  },[profile,fetchUserProfile,user])
+  },[profile,fetchDoctorProfile,user])
   
 console.log("i",profile)
   return (

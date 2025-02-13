@@ -27,6 +27,7 @@ const route = useRouter()
       <Button variant="outline" onClick={async()=>{ 
          await logoutUser()
           toast.success("Successfully Logout ")
+         
           route.push(`/Login/${logo}`)}}>
             logout</Button>
       <Avatar >

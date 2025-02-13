@@ -28,7 +28,7 @@ const formSchema = z.object({
   specialization: z.string().min(10, {
     message: "Specialization must be at least 10 characters.",
   }),
-  experience: z.number().min(1, {
+  experience: z.string().min(1, {
     message: "Experience be required for the profile.",
   }),
  
@@ -54,7 +54,7 @@ export default function ProfileForm() {
     defaultValues: {
       name: "",
       specialization: "",
-      experience: 0,
+      experience: "",
      
       gender: undefined,
       contact: "",
@@ -80,6 +80,8 @@ export default function ProfileForm() {
       if (res2) {
         setLoading(false)
       }
+    }else{
+      setLoading(false)
     }
   }
 

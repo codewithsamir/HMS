@@ -1,22 +1,36 @@
 "use client"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AppointmentsTable from "./Appointmenttable";
 import InfoCard from "../Infocard";
 
 import { FaCalendarAlt, FaEnvelopeOpenText, FaClipboardList } from 'react-icons/fa';
 import { Calendar } from "@/components/ui/calendar";
 import { ProfileForm } from "./Profileform";
+import { useAppointmentStore } from "@/store/Appointment";
 
 
 
 const Dashboard = () => {
   const [date, setDate] = useState<Date | undefined>(new Date())
+  const {appointments,fetchAppointments} = useAppointmentStore()
 
-  const [appointments, setAppointments] = useState([
-    { id: 'A001', doctor: 'Dr. Smith', date: '2025-02-10', status: 'Scheduled' },
-    { id: 'A002', doctor: 'Dr. Johnson', date: '2025-02-12', status: 'Completed' },
-    // Add more appointments as needed
-  ]);
+  useEffect(()=>{
+    const data = async ()=>{
+      await fetchAppointments()
+    }
+    data()
+
+  },[fetchAppointments])
+
+  useEffect(() => {
+    console.log("appointments",appointments);
+  },[fetchAppointments,appointments])
+
+  // const [appointments, setAppointments] = useState([
+  //   { id: 'A001', doctor: 'Dr. Smith', date: '2025-02-10', status: 'Scheduled' },
+  //   { id: 'A002', doctor: 'Dr. Johnson', date: '2025-02-12', status: 'Completed' },
+  //   // Add more appointments as needed
+  // ]);
 
   const cardData = [
     {

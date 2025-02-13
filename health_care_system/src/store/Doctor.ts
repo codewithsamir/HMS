@@ -12,26 +12,29 @@ export interface DoctorProfile {
   doctorid: string;
   name: string;
   specialization: string;
-  experience: number;
+  experience: string;
   contact: string;
   imageUrl: string;
   imageid: string;
-  gender:string;
-  
+  gender: string;
 }
 
 interface DoctorState {
   profile: DoctorProfile | null;
+  Alldoctor: DoctorProfile[] | null;
+  getDoctorById(doctorId: string): Promise<DoctorProfile | undefined>;
   loading: boolean;
   uploadDoctorImage(image: File): Promise<{ imageUrl: string; imageid: string } | null>;
   saveDoctorProfile(data: Omit<DoctorProfile, "doctorid">): Promise<boolean>;
   fetchDoctorProfile(): Promise<void>;
+  fetchDoctors(): Promise<void>;
 }
 
 export const useDoctorStore = create<DoctorState>()(
   persist(
     immer((set, get) => ({
       profile: null,
+      Alldoctor: null,
       loading: false,
 
       async uploadDoctorImage(image) {
@@ -48,7 +51,7 @@ export const useDoctorStore = create<DoctorState>()(
             image
           );
 
-          const imageUrl = `https://cloud.appwrite.io/v1/storage/buckets/${ImageBucket}/files/${imageUploadResponse.$id}/view?project=${env.appwrite.projectId}`;
+          const imageUrl = `https://cloud.appwrite.io/v1/storage/buckets/${ImageBucket}/files/${imageUploadResponse.$id}/view?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}`;
 
           return { imageUrl, imageid: imageUploadResponse.$id };
         } catch (error) {
@@ -94,6 +97,7 @@ export const useDoctorStore = create<DoctorState>()(
 
       async fetchDoctorProfile() {
         try {
+          set({ loading: true });
           const user = useAuthStore.getState().user; // Get authenticated user
           if (!user) return;
 
@@ -102,8 +106,6 @@ export const useDoctorStore = create<DoctorState>()(
             doctorInformation,  // Collection ID
             [Query.equal("doctorid", user.$id)]
           );
-
-          console.log(response, user.$id);
 
           if (response.total > 0) {
             set({ profile: response.documents[0] as DoctorProfile });
@@ -114,6 +116,52 @@ export const useDoctorStore = create<DoctorState>()(
           set({ profile: null });
           console.error("Error fetching doctor profile:", error);
           toast.error("Failed to fetch doctor profile.");
+        } finally {
+          set({ loading: false });
+        }
+      },
+
+      async getDoctorById(doctorId) {
+        console.log("doctorId", doctorId);
+        try {
+          set({ loading: true });
+          const response = await databases.listDocuments(
+            db,                 // Database ID
+            doctorInformation,  // Collection ID
+            [Query.equal("$id", doctorId)]
+          );
+
+          if (response.total > 0) {
+            return response.documents[0] as DoctorProfile;
+          } else {
+            return undefined;
+          }
+        } catch (error) {
+          console.error("Error fetching doctor profile:", error);
+          toast.error("Failed to fetch doctor profile.");
+          return undefined;
+        } finally {
+          set({ loading: false });
+        }
+      },
+
+      async fetchDoctors() {
+        try {
+          set({ loading: true });
+          const response = await databases.listDocuments(
+            db,                 // Database ID
+            doctorInformation   // Collection ID
+          );
+
+          if (response.total > 0) {
+            set({ Alldoctor: response.documents as DoctorProfile[] });
+          } else {
+            set({ Alldoctor: null });
+          }
+        } catch (error) {
+          set({ Alldoctor: null });
+          console.error("Error fetching doctors:", error);
+          toast.error("Failed to fetch doctors.");
         } finally {
           set({ loading: false });
         }
