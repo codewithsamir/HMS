@@ -16,7 +16,7 @@ const Layout = ({
     const [sidebarstate, setsidebarstate] = useState<boolean>(false)
   
     const {profile,fetchUserProfile} = useUserStore()
-    const {user} = useAuthStore()
+
    
   const menu = [
     { name: "Dashboard", icon: <MdDashboard /> },
@@ -27,10 +27,10 @@ const Layout = ({
 
   useEffect(()=>{
     const profiledata = async ()=>{
-      if(user){
+   
 
         await fetchUserProfile()
-      }
+
     }
 
     profiledata()

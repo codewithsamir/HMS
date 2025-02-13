@@ -15,7 +15,7 @@ export interface Appointment {
   appointment_date: string;  // Date of the appointment
   appointment_time: string;  // Time of the appointment
   appointment_reason: string; // Reason for the appointment
-  status: string;            // Appointment status (e.g., "Pending", "Confirmed")
+  status: string;            // Appointment status (e.g., "scheduled", "completed", "cancelled")
   doctor?: {                 // Optional doctor data
     name: string;
     specialization: string;
@@ -29,10 +29,11 @@ export interface Appointment {
 interface AppointmentState {
   appointments: Appointment[];
   loading: boolean;
-  bookAppointment( data: Omit<Appointment, "id" | "patient_id" | "status">): Promise<boolean>;
+  bookAppointment(data: Omit<Appointment, "id" | "patient_id" | "status">): Promise<boolean>;
   fetchAppointments(): Promise<void>;
   cancelAppointment(appointmentId: string): Promise<boolean>;
   updateAppointmentStatus(appointmentId: string, status: string): Promise<boolean>;
+  getAppointmentSummary(): { totalCompleted: number; totalUpcoming: number ; total:number};
 }
 
 export const useAppointmentStore = create<AppointmentState>()(
@@ -94,9 +95,7 @@ export const useAppointmentStore = create<AppointmentState>()(
       
           const appointmentsWithDoctorData = await Promise.all(
             response.documents.map(async (apt) => {
-              console.log("apt",apt)
               const doctor = await doctorStore.getDoctorById(apt.doctor_id); // Fetch doctor data using doctor_id
-                console.log("doctor",doctor)
               return {
                 ...apt,
                 doctor: doctor ? {
@@ -110,7 +109,7 @@ export const useAppointmentStore = create<AppointmentState>()(
               };
             })
           );
-       console.log("this is app",appointmentsWithDoctorData)
+      
           // Update state with appointments and doctor data
           set({ appointments: appointmentsWithDoctorData as Appointment[] });
         } catch (error) {
@@ -154,6 +153,16 @@ export const useAppointmentStore = create<AppointmentState>()(
           toast.error("Failed to update appointment status.");
           return false;
         }
+      },
+
+      // New method to get the total appointments done (completed)
+      // and total upcoming (scheduled) appointments.
+      getAppointmentSummary() {
+        const { appointments } = get();
+        const totalCompleted = appointments.filter(apt => apt.status.toLowerCase() === 'completed').length;
+        const totalUpcoming = appointments.filter(apt => apt.status.toLowerCase() === 'scheduled').length;
+        const total = appointments.length;
+        return { totalCompleted, totalUpcoming,total };
       },
     })),
     { name: "appointments" }

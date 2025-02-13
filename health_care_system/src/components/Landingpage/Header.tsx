@@ -3,9 +3,12 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 import { FaStethoscope, FaUser, FaUserMd, FaUserShield, FaBars, FaTimes, FaHome } from 'react-icons/fa';
 import { Button } from '../ui/button';
+import { useAuthStore } from '@/store/Auth';
+import { Avatar, AvatarFallback } from '../ui/avatar';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const {user} =  useAuthStore()
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -44,10 +47,20 @@ const Header = () => {
               <FaHome className="text-blue-600 w-5 h-5" />
               <span className="font-medium ">Home</span>
             </Link>
-            <Link href="/Login/User" className="flex items-center gap-2  hover:underline transition ">
-              <FaUser className="text-blue-600 w-5 h-5" />
-              <span className="font-medium ">User Login</span>
-            </Link>
+
+            <Link href={user ? "/User/Dashboard" : "/Login/User"} className="flex items-center gap-2 hover:underline transition">
+  {user ? (
+    <Avatar>
+      <AvatarFallback className='bg-blue-950 text-white items-center'>{user.name?.slice(0, 2).toUpperCase()}</AvatarFallback>
+    </Avatar>
+  ) : (
+    <>
+      <FaUser className="text-blue-600 w-5 h-5" />
+      <span className="font-medium">User Login</span>
+    </>
+  )}
+</Link>
+
             <Link href="/Login/Doctor" className="flex items-center gap-2  hover:underline transition ">
               <FaUserMd className="text-blue-600 w-5 h-5" />
               <span className="font-medium ">Doctor Login</span>

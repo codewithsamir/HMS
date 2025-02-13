@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import AppointmentsTable from "./Appointmenttable";
 import InfoCard from "../Infocard";
 
-import { FaCalendarAlt, FaEnvelopeOpenText, FaClipboardList } from 'react-icons/fa';
+import { FaCalendarAlt, FaEnvelopeOpenText, FaClipboardList, FaCheckCircle } from 'react-icons/fa';
 import { Calendar } from "@/components/ui/calendar";
 import { ProfileForm } from "./Profileform";
 import { useAppointmentStore } from "@/store/Appointment";
@@ -12,7 +12,7 @@ import { useAppointmentStore } from "@/store/Appointment";
 
 const Dashboard = () => {
   const [date, setDate] = useState<Date | undefined>(new Date())
-  const {appointments,fetchAppointments} = useAppointmentStore()
+  const {appointments,fetchAppointments,getAppointmentSummary} = useAppointmentStore()
 
   useEffect(()=>{
     const data = async ()=>{
@@ -26,29 +26,32 @@ const Dashboard = () => {
     console.log("appointments",appointments);
   },[fetchAppointments,appointments])
 
-  // const [appointments, setAppointments] = useState([
-  //   { id: 'A001', doctor: 'Dr. Smith', date: '2025-02-10', status: 'Scheduled' },
-  //   { id: 'A002', doctor: 'Dr. Johnson', date: '2025-02-12', status: 'Completed' },
-  //   // Add more appointments as needed
-  // ]);
+  
 
-  const cardData = [
-    {
-      icon: <FaCalendarAlt className="text-blue-500" />,
-      title: 'Upcoming Appointments',
-      content: 2, // Example count
-    },
-    {
-      icon: <FaClipboardList className="text-green-500" />,
-      title: 'Total Appointments',
-      content: 10, // Example count
-    },
-    {
-      icon: <FaEnvelopeOpenText className="text-orange-500" />,
-      title: 'Messages from Doctor',
-      content: 3, // Example count
-    },
-  ];
+  const cardDates = getAppointmentSummary();
+
+// Calculate total appointments as the sum of upcoming and completed
+const totalAppointments =
+  cardDates ? cardDates.totalUpcoming + cardDates.totalCompleted : 0;
+
+const cardData = [
+  {
+    icon: <FaClipboardList className="text-green-500" />,
+    title: 'Total Appointments',
+    content: totalAppointments, // Sum of upcoming and completed appointments
+  },
+  {
+    icon: <FaCalendarAlt className="text-blue-500" />,
+    title: 'Upcoming Appointments',
+    content: cardDates ? cardDates.totalUpcoming : 0,
+  },
+  {
+    icon: <FaCheckCircle className="text-orange-500" />,
+    title: 'Total Completed',
+    content: cardDates ? cardDates.totalCompleted : 0,
+  },
+];
+  
 
   const handleEdit = (id: string) => {
     // Implement edit functionality here
@@ -65,7 +68,7 @@ const Dashboard = () => {
     <div className="grid grid-cols-1  sm:grid-cols-3 gap-2  md:gap-4 py-6">
       {cardData.map((card, index) => (
         <InfoCard
-          key={index}
+          key={index + 1}
           icon={card.icon}
           title={card.title}
           content={card.content}
