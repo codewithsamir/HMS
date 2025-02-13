@@ -65,10 +65,7 @@ const Header = () => {
               <FaUserMd className="text-blue-600 w-5 h-5" />
               <span className="font-medium ">Doctor Login</span>
             </Link>
-            <Link href="/Login/Admin" className="flex items-center gap-2  hover:underline transition ">
-              <FaUserShield className="text-blue-600 w-5 h-5" />
-              <span className="font-medium ">Admin Login</span>
-            </Link>
+          
         
           </div>
         </div>
