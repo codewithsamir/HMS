@@ -162,12 +162,12 @@ const router = useRouter()
                 {loading ? <Spinner/> : "Signup"}
                 </Button>
             </form>
-            <Button
+            {/* <Button
               disabled={loading}
             onClick={()=>loginWithGoogle(signupid)}
             className="bg-black w-full px-4 py-5 rounded-lg shadow-md text-white hover:bg-red-500 hover:text-white">
               <FaGoogle size={20} color="white" /> Signup with Google
-            </Button>
+            </Button> */}
             <div className="flex justify-center items-center flex-col text-sm text-white">
               Already have an account? <Link href={`/Login/${signupid}`} className="text-white underline hover:text-red-500">Login</Link>
             </div>

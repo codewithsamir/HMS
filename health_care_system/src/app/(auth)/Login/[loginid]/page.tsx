@@ -158,7 +158,7 @@ const [loading,setloading] =  useState<boolean>(false)
                   {loading ? <Spinner/> :  "Submit"}
                 </Button>
               </form>
-
+{/* 
               <Button
                onClick={async()=>{
                await loginWithGoogle(loginid)
@@ -170,7 +170,7 @@ const [loading,setloading] =  useState<boolean>(false)
               >
                 <FaGoogle size={20} color="white" />
                 Login with Google
-              </Button>
+              </Button> */}
 
               <div className="flex justify-center items-center flex-col text-sm text-white">
                 If you donot have an account,{" "}
