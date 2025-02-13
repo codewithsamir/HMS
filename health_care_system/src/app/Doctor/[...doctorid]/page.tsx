@@ -1,7 +1,9 @@
 "use client";
 
-import Appointment from '@/components/Dashboard/UserDashboard/Appointment';
-import Dashboard from '@/components/Dashboard/UserDashboard/dashboard';
+import Appointment from '@/components/Dashboard/DoctorDashboard/appointment';
+import Dashboard from '@/components/Dashboard/DoctorDashboard/dashboard';
+import Doctorinfo from '@/components/Dashboard/DoctorDashboard/doctorinfo';
+import Patientdata from '@/components/Dashboard/DoctorDashboard/Patientdata';
 import Myinfo from '@/components/Dashboard/UserDashboard/Myinfo';
 import { Button } from '@/components/ui/button';
 
@@ -14,8 +16,8 @@ const Page = ({params}:{params:{userid:string}}) => {
 
   useEffect(() => {
     const user = async ()=>{
-      const {userid} = await params;
-      setuserid(userid[0]);
+      const {doctorid} = await params;
+      setuserid(doctorid[0]);
     }
     user();
     // console.log("userid",userid);
@@ -31,7 +33,8 @@ useEffect(() => {
     <>
        {userid === "Dashboard" && <Dashboard />}
        {userid === "Appointment" && <Appointment />}
-       {userid === "Myinfo" && <Myinfo />}
+       {userid === "Patient" && <Patientdata/>}
+       {userid === "Myinfo" && <Doctorinfo />}
     
     </>
   );

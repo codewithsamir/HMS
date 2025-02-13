@@ -128,7 +128,7 @@ export const useDoctorStore = create<DoctorState>()(
           const response = await databases.listDocuments(
             db,                 // Database ID
             doctorInformation,  // Collection ID
-            [Query.equal("$id", doctorId)]
+            [Query.equal("doctorid", doctorId)]
           );
 
           if (response.total > 0) {

@@ -31,7 +31,7 @@ const route = useRouter()
           route.push(`/Login/${logo}`)}}>
             logout</Button>
       <Avatar >
-  <AvatarFallback className=' text-white text-3xl bg-blue-950 select-none' >{user && user.name[0]}</AvatarFallback>
+  <AvatarFallback className=' text-white text-3xl bg-blue-950 select-none' >{user && user.name[0].toUpperCase()}</AvatarFallback>
 </Avatar>
       
       </div>

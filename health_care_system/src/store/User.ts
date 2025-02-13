@@ -23,6 +23,7 @@ interface UserState {
   uploadProfileImage(image: File): Promise<{ imageurl: string; imageid: string } | null>;
   saveUserProfile(data: Omit<UserProfile, "userid">): Promise<boolean>;
   fetchUserProfile(): Promise<void>;
+  fetchUserProfileById(userid: string): Promise<UserProfile | null>; // New method
 }
 
 export const useUserStore = create<UserState>()(
@@ -102,7 +103,6 @@ export const useUserStore = create<UserState>()(
             ]
           );
 
-            console.log(response,user.$id);
           if (response.total > 0) {
             set({ profile: response.documents[0] as UserProfile });
           } else {
@@ -112,6 +112,35 @@ export const useUserStore = create<UserState>()(
           set({ profile: null });
           console.error("Error fetching profile:", error);
           toast.error("Failed to fetch profile.");
+        } finally {
+          set({ loading: false });
+        }
+      },
+
+      // New method: Fetch user profile by userid
+      async fetchUserProfileById(userid: string) {
+        try {
+          set({ loading: true });
+
+          const response = await databases.listDocuments(
+            db,         // Database ID
+            patientinfo, // Collection ID
+            [
+              Query.equal('userid', userid)
+            ]
+          );
+
+          if (response.total > 0) {
+            const profile = response.documents[0] as UserProfile;
+            return profile;
+          } else {
+            toast.error("No profile found for the given user ID.");
+            return null;
+          }
+        } catch (error) {
+          console.error("Error fetching profile by user ID:", error);
+          toast.error("Failed to fetch profile.");
+          return null;
         } finally {
           set({ loading: false });
         }

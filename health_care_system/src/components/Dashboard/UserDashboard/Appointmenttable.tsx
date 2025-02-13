@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/table';
 import { FaEdit } from 'react-icons/fa';
 import { Button } from '@/components/ui/button';
+import ActionAppointment from '../actionAppointment'; // Import the popup component
 
 interface Appointment {
   $id: string;
@@ -25,6 +26,12 @@ interface AppointmentsTableProps {
 }
 
 const AppointmentsTable = ({ appointments, onEdit }: AppointmentsTableProps) => {
+  // State to manage the selected appointment for editing
+  const [selectedAppointment, setSelectedAppointment] = useState<{
+    id: string;
+    status: string;
+  } | null>(null);
+
   // Function to determine the status color
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
@@ -39,12 +46,20 @@ const AppointmentsTable = ({ appointments, onEdit }: AppointmentsTableProps) => 
     }
   };
 
+  // Open the popup for a specific appointment
+  const handleEditClick = (appointmentId: string, currentStatus: string) => {
+    setSelectedAppointment({ id: appointmentId, status: currentStatus });
+  };
+
+  // Close the popup
+  const handleClosePopup = () => {
+    setSelectedAppointment(null);
+  };
+
   return (
     <div className="overflow-x-auto">
       {appointments.length === 0 ? (
-        <p className="text-center text-gray-500">
-          No appointments taken by you
-        </p>
+        <p className="text-center text-gray-500">No appointments taken by you</p>
       ) : (
         <Table className="min-w-full divide-y divide-gray-200 rounded-md">
           <TableHeader>
@@ -82,10 +97,10 @@ const AppointmentsTable = ({ appointments, onEdit }: AppointmentsTableProps) => 
                   {appointment?.doctor?.name}
                 </TableCell>
                 <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {new Date(appointment.appointment_date).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
+                  {new Date(appointment.appointment_date).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
                   })}
                 </TableCell>
                 <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -101,7 +116,7 @@ const AppointmentsTable = ({ appointments, onEdit }: AppointmentsTableProps) => 
                 <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <Button
                     variant="ghost"
-                    onClick={() => onEdit(appointment.$id)}
+                    onClick={() => handleEditClick(appointment.$id, appointment.status)}
                     className="text-blue-500 hover:text-blue-700"
                   >
                     <FaEdit />
@@ -111,6 +126,17 @@ const AppointmentsTable = ({ appointments, onEdit }: AppointmentsTableProps) => 
             ))}
           </TableBody>
         </Table>
+      )}
+
+      {/* Render the popup if an appointment is selected */}
+      {selectedAppointment && (
+        <ActionAppointment
+          appointmentId={selectedAppointment.id}
+          currentStatus={selectedAppointment.status}
+          ispatient={true} // Pass whether the user is a patient
+          open={!!selectedAppointment} // Pass whether the popup should be open
+          onClose={handleClosePopup} // Close the popup
+        />
       )}
     </div>
   );

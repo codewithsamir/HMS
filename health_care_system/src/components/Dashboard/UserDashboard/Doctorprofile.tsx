@@ -15,7 +15,7 @@ const Doctorprofile = ({data,setselectdoctor}:any) => {
        {data.specialization}
        {data.experience}
         </CardDescription>
-      <Button onClick={()=>setselectdoctor(data.$id)} className="w-full">Select</Button>
+      <Button onClick={()=>setselectdoctor(data.doctorid)} className="w-full">Select</Button>
       </CardHeader>
     
     
